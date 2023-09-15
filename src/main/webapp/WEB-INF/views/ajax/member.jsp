@@ -8,12 +8,17 @@
 	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 	
 	<script type="text/javascript">
+		
+		let listSize;
 	
 		function getUsers(){	// 데이터 요청 get
 			$.ajax({
 				url:"users", type:"get", dataType:"json",
 				success:function(list){
+					
 					console.log(list);
+					listSize = list.length;					
+					
 					let msg="";
 					list.forEach((data)=> {
 						msg += "<b>이름: "+data.name+"</b><br>";
@@ -90,6 +95,7 @@
 				contentType: "application/json; charset=utf-8",
 				dataType: "json",
 				success: (result)=> {
+					test();
 					console.log("result: "+ result);
 					if(result == 1)
 						alert("추가 되었습니다");
@@ -103,8 +109,31 @@
 		function delUser(){	// delete 데이터 삭제
 			$.ajax({
 				url:"delete/"+$("#id").val(), type:"delete"
+				success: ()=> {
+					test();
+				}
 			});
 		}
+		function test(){
+		    var end = setTimeout(test, "100");
+		    console.log("test");
+		    $.ajax({
+		       url : "users", type : "get", dataType : "json",
+		       success : function( list ){
+		          if(list.length != listSize ){
+		             let msg ="";
+		             list.forEach((data)=>{
+		                msg += "<b>이름 : "+data.name+"</b><br>";
+		                msg += "<b>나이 : "+data.age+"</b><hr>";
+		             })
+		             $("#data").html( msg );
+		             clearTimeout( end )
+		          }
+		       },
+		       error : () =>{ alert("문제 발생") }
+		    });
+		 }
+
 	</script>
 </head>
 <body>
